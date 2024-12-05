@@ -1,0 +1,154 @@
+local player = game.Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local toolsFrame = Instance.new("Frame")
+toolsFrame.Size = UDim2.new(0.15, 0, 0.3, 0)
+toolsFrame.Position = UDim2.new(0.05, 0, 0.05, 0)
+toolsFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+toolsFrame.Parent = screenGui
+
+local toggleFightButton = Instance.new("TextButton")
+toggleFightButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+toggleFightButton.Position = UDim2.new(0.05, 0, 0.05, 0)
+toggleFightButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleFightButton.TextColor3 = Color3.new(1, 1, 1)
+toggleFightButton.Font = Enum.Font.Gotham
+toggleFightButton.Text = "Toggle Auto Fight"
+toggleFightButton.Parent = toolsFrame
+
+local toggleStompButton = Instance.new("TextButton")
+toggleStompButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+toggleStompButton.Position = UDim2.new(0.05, 0, 0.3, 0)
+toggleStompButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleStompButton.TextColor3 = Color3.new(1, 1, 1)
+toggleStompButton.Font = Enum.Font.Gotham
+toggleStompButton.Text = "Toggle Auto Stomp"
+toggleStompButton.Parent = toolsFrame
+
+local modWatchButton = Instance.new("TextButton")
+modWatchButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+modWatchButton.Position = UDim2.new(0.05, 0, 0.55, 0)
+modWatchButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+modWatchButton.TextColor3 = Color3.new(1, 1, 1)
+modWatchButton.Font = Enum.Font.Gotham
+modWatchButton.Text = "Toggle Mod Watch"
+modWatchButton.Parent = toolsFrame
+
+local toggleSizeButton = Instance.new("TextButton")
+toggleSizeButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+toggleSizeButton.Position = UDim2.new(0.05, 0, 0.8, 0)
+toggleSizeButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleSizeButton.TextColor3 = Color3.new(1, 1, 1)
+toggleSizeButton.Font = Enum.Font.Gotham
+toggleSizeButton.Text = "Toggle GUI Size"
+toggleSizeButton.Parent = toolsFrame
+
+local autoFightEnabled = false
+local autoStompEnabled = false
+local ModWatchEnabled = false
+local isGUIExpanded = true
+
+toggleFightButton.MouseButton1Click:Connect(function()
+    autoFightEnabled = not autoFightEnabled
+    toggleFightButton.Text = autoFightEnabled and "Auto Fight ON" or "Auto Fight OFF"
+    if autoFightEnabled then
+        while autoFightEnabled do
+            local args = { [1] = "Swing" }
+            ReplicatedStorage.Events.WeaponEvent:FireServer(unpack(args))
+            wait(0.1)
+        end
+    end
+end)
+
+toggleStompButton.MouseButton1Click:Connect(function()
+    autoStompEnabled = not autoStompEnabled
+    toggleStompButton.Text = autoStompEnabled and "Auto Stomp ON" or "Auto Stomp OFF"
+    if autoStompEnabled then
+        while autoStompEnabled do
+            local args = { [1] = "EPress" }
+            ReplicatedStorage.Events.CarryStompEvent:FireServer(unpack(args))
+            wait(0.1)
+        end
+    end
+end)
+
+modWatchButton.MouseButton1Click:Connect(function()
+    ModWatchEnabled = not ModWatchEnabled
+    modWatchButton.Text = ModWatchEnabled and "Mod Watch ON" or "Mod Watch OFF"
+end)
+
+toggleSizeButton.MouseButton1Click:Connect(function()
+    isGUIExpanded = not isGUIExpanded
+    if isGUIExpanded then
+        toolsFrame.Size = UDim2.new(0.15, 0, 0.3, 0)
+        toggleFightButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+        toggleStompButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+        modWatchButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+        toggleSizeButton.Size = UDim2.new(0.9, 0, 0.25, 0)
+        toggleSizeButton.Text = "Toggle GUI Size"
+    else
+        toolsFrame.Size = UDim2.new(0.1, 0, 0.2, 0)
+        toggleFightButton.Size = UDim2.new(0.9, 0, 0.2, 0)
+        toggleStompButton.Size = UDim2.new(0.9, 0, 0.2, 0)
+        modWatchButton.Size = UDim2.new(0.9, 0, 0.2, 0)
+        toggleSizeButton.Size = UDim2.new(0.9, 0, 0.2, 0)
+        toggleSizeButton.Text = "Expand GUI"
+    end
+end)
+
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+toolsFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = toolsFrame.Position
+    end
+end)
+
+toolsFrame.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        toolsFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+toolsFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+local specificPlayers = {
+    "FinnishNisu", "MTcHavoc", "nxkroo", "ViralMercy", "Athens0hio",
+    "SithJJ", "tapotopi", "ViralDree", "F4LDA", "KlaKoon", 
+    "TemmieTerra", "AwesomegamerPC", "ViralNorth"
+}
+
+local function isSpecificPlayer(playerName)
+    for _, specificName in ipairs(specificPlayers) do
+        if playerName == specificName then
+            return true
+        end
+    end
+    return false
+end
+
+local function kickLocalPlayer()
+    player:Kick("A mod joined the game. You have been kicked.")
+end
+
+Players.PlayerAdded:Connect(function(player)
+    if ModWatchEnabled and isSpecificPlayer(player.Name) then
+        kickLocalPlayer()
+    end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+end)
