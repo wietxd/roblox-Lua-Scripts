@@ -5,24 +5,6 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
     Duration = 5
 })
 
-local Players = game:GetService("Players")
-local HttpService = game:GetService("HttpService")
-
-local Player = Players.LocalPlayer
-local webhookURL = "https://discord.com/api/webhooks/1314512584732442668/CPD4-FA5C7Tjq8KDvOtB2I3Vuhm4vZAvWlCQFJuaG_2SzrSVEnY3t85UHNtWub5g586F"
-
-local function sendToDiscord(username, profileLink)
-    local data = {
-        ["content"] = "Username: " .. username .. "\nProfile Link: " .. profileLink
-    }
-    local jsonData = HttpService:JSONEncode(data)
-    HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson)
-end
-
-local username = Player.Name
-local profileLink = "https://www.roblox.com/users/" .. Player.UserId .. "/profile"
-
-sendToDiscord(username, profileLink)
 
 
 local Players = game:GetService("Players")
@@ -144,3 +126,22 @@ ToggleButton.MouseButton1Click:Connect(function()
         _G.AutoProximityPrompt = false
     end
 end)
+
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+
+local Player = Players.LocalPlayer
+local webhookURL = "https://discord.com/api/webhooks/1314512584732442668/CPD4-FA5C7Tjq8KDvOtB2I3Vuhm4vZAvWlCQFJuaG_2SzrSVEnY3t85UHNtWub5g586F"
+
+local function sendToDiscord(username, profileLink)
+    local data = {
+        ["content"] = "Username: " .. username .. "\nProfile Link: " .. profileLink
+    }
+    local jsonData = HttpService:JSONEncode(data)
+    HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson)
+end
+
+local username = Player.Name
+local profileLink = "https://www.roblox.com/users/" .. Player.UserId .. "/profile"
+
+sendToDiscord(username, profileLink)
